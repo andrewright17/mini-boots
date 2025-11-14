@@ -3,7 +3,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 import sys
-from config import SYSTEM_PROMPT
+from config import SYSTEM_PROMPT, MODEL_NAME
 from functions.get_files_info import get_files_info, schema_get_files_info
 from functions.get_file_content import get_file_content, schema_get_file_content
 from functions.run_python_file import run_python_file, schema_run_python_file
@@ -72,7 +72,7 @@ available_functions = types.Tool(
     ]
 )
 
-model_name = "gemini-2.0-flash-001"
+model_name = MODEL_NAME
 
 response = client.models.generate_content(
     model=model_name,
