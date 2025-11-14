@@ -1,6 +1,21 @@
 import os
 from os.path import abspath
 from config import MAX_CHARS
+from google.genai import types
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description=f"Show the content of the file up to the first {MAX_CHARS} characters.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file for which the content is being shown.",
+            ),
+        },
+    ),
+)
 
 
 def get_file_content(working_directory, file_path):

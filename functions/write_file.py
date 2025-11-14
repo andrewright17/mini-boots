@@ -1,6 +1,25 @@
 import os
 from os.path import abspath
 from config import MAX_CHARS
+from google.genai import types
+
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Write data to a file.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file path we are writing to.",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="The content that is going in the file.",
+            ),
+        },
+    ),
+)
 
 
 def write_file(working_directory, file_path, content):

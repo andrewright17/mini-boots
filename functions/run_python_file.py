@@ -2,6 +2,25 @@ import os
 from os.path import abspath
 from config import MAX_CHARS
 import subprocess
+from google.genai import types
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Execute a python file at a specified file path with given arguments.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file which is to be executed.",
+            ),
+            "args": types.Schema(
+                type=types.Type.STRING,
+                description="The arguments to be passed with the python file for execution.",
+            ),
+        },
+    ),
+)
 
 
 def run_python_file(working_directory, file_path, args=[]):
