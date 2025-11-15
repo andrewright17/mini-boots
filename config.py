@@ -1,5 +1,5 @@
 MAX_CHARS = 10000
-MODEL_NAME = "gemini-2.0-flash-lite-001"
+MODEL_NAME = "gemini-2.0-flash-001"
 SYSTEM_PROMPT = """
 You are a helpful AI coding agent.
 

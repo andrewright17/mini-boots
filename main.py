@@ -74,28 +74,41 @@ available_functions = types.Tool(
 
 model_name = MODEL_NAME
 
-response = client.models.generate_content(
-    model=model_name,
-    contents=messages,
-    config=types.GenerateContentConfig(
-        tools=[available_functions], system_instruction=SYSTEM_PROMPT
-    ),
-)
-
 try:
-    if response.function_calls:
-        for function_call_part in response.function_calls:
-            function_call_result = call_function(
-                function_call_part, verbose="--verbose" in sys.argv
-            )
-            if "--verbose" in sys.argv:
-                print(f"-> {function_call_result.parts[0].function_response.response}")
-    else:
-        print(response.text)
-except Exception as e:
-    raise Exception(f"Error: {e}")
+    for i in range(10):
+        response = client.models.generate_content(
+            model=model_name,
+            contents=messages,
+            config=types.GenerateContentConfig(
+                tools=[available_functions], system_instruction=SYSTEM_PROMPT
+            ),
+        )
 
-if "--verbose" in sys.argv:
-    print(f"User prompt: {user_prompt}")
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+        try:
+            for candidate in response.candidates:
+                messages.append(candidate.content)
+            if response.function_calls:
+                for function_call_part in response.function_calls:
+                    function_call_result = call_function(
+                        function_call_part, verbose="--verbose" in sys.argv
+                    )
+                    messages.append(
+                        types.Content(role="user", parts=function_call_result.parts)
+                    )
+                    if "--verbose" in sys.argv:
+                        print(
+                            f"-> {function_call_result.parts[0].function_response.response}"
+                        )
+            else:
+                if response.text:
+                    print(response.text)
+                    break
+        except Exception as e:
+            raise Exception(f"Error: {e}")
+
+        if "--verbose" in sys.argv:
+            print(f"User prompt: {user_prompt}")
+            print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+            print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+except Exception as e:
+    print(f"Error occurred: {e}")
